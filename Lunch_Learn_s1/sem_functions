@@ -84,7 +84,7 @@ function sem_parse_pdf() {
 #   $2: text item 2
 #   $3: OPTIONAL(en): language code for text item 1
 #   $4: OPTIONAL(en): language code for text item 2
-#   $3: OPTIONAL("sem.ssm"): The similarity algorithm identifier used for comparison.
+#   $5: OPTIONAL("sem.ssm"): The similarity algorithm identifier used for comparison.
 function sem_similarity() {
 
     local text1=$1
