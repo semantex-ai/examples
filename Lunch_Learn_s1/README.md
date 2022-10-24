@@ -35,7 +35,8 @@ If you want to see the pretty-formatted JSON response, pipe it to the `jq` comma
 ### Language detect
 ```
 $ sem_lang_detect "I am writing text in English." | jq 
-
+```
+```
 {
   "status": {
     "success": true,
@@ -51,6 +52,8 @@ $ sem_lang_detect "I am writing text in English." | jq
 ### Sentiment
 ```
 $ sem_sentiment "I am happy the sun came out today." | jq 
+```
+```
 {
   "status": {
     "success": true,
@@ -71,6 +74,8 @@ $ sem_sentiment "I am happy the sun came out today." | jq
 ### Text Similarity
 ```
 $ sem_similarity "how are you" "how old are you" en en "sem.ssm" | jq 
+```
+```
 {
   "status": {
     "success": true,
@@ -90,6 +95,8 @@ $ sem_similarity "how are you" "how old are you" en en "sem.ssm" | jq
 ### PDF Parsing
 ```
 $ sem_parse_pdf samples/sample_1.pdf | jq 
+```
+```
 {
   "status": {
     "success": true,
