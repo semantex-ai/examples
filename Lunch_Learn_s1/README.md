@@ -6,7 +6,7 @@ to contruct the proper JSON based payloads for the API calls.
 # Requirements
 1. [cURL](https://curl.se/)
 2. [jq](https://stedolan.github.io/jq/)
-93. An API Key. You can get a demonstration key from [api][http://www.semantex.ai/apis/) page.
+93. An API Key. You can get a demonstration key from [api](http://www.semantex.ai/apis/) page.
 
 # Configuration
 As long as the requirments are met, no additional configuration is required to execute the scripts.
