@@ -15,7 +15,7 @@ If you would like to use your own registered API_KEY, simply set it as a shell e
 
 # Execution
 The file `sem_functions` define the following functions as werapper for the corresponding API calls. 
-Refer to the [API documentation](semantex.ai/apis/) pages for details on input and output. 
+Refer to the [API documentation](http://www.semantex.ai/apis/) pages for details on input and output. 
 1. `sem_lang_detect()`: Detects the language code for a given text input.
 2. `sem_sentiment()`: Detects the sentiment of a given text.
 3. `sem_entities()`: Detects the named entities in a given text.
