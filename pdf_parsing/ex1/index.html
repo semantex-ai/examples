@@ -1,0 +1,37 @@
+<html>
+    <head>
+        <title>PDF Viewer</title>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.1.81/pdf.min.js"></script>
+    </head>
+    <body>
+        <h1>PDF Viewer</h1>
+
+        <input type="file" id="pdf-file" accept="image/pdf"/>
+        
+        <input type="button" id="button-prev" value="<"/>
+        <input type="button" id="button-next" value=">"/>
+
+        <br />eng  : <input type="text" id="engine"  value="v2"/>
+        <br />y-mul: <input type="number" id="ymul" value="1.75"/>
+        <br />y_spc: <input type="number" id="yspc" value="1.10"/>
+        <br />w-mul: <input type="number" id="wmul" value="7"/>
+        
+
+        <script>
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.1.81/pdf.worker.min.js';
+        </script>
+        <script type="text/javascript" src="index.js">
+        </script>
+        
+        <div id="msgid">
+        </div>
+
+        <div>
+            <img id="pdf_img" style="border: 5px solid #555;" />
+
+        </div>
+
+        </body>
+    </body>
+</html>
