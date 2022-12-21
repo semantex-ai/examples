@@ -107,18 +107,55 @@ document.querySelector("#pdf-file").addEventListener('change', function() {
 
     console.log(_OBJECT_URL)
 
+    $("#resend").prop('disabled', false)
+
     showPDF(_OBJECT_URL)
 });
 
-$("#button-prev").click('change', function() {
-
+$("#button-prev").click(function() {
     const totalPages = getNumberOfPages();
     _CUR_PAGE_INDEX=mod(_CUR_PAGE_INDEX-1, totalPages);
     showImage();
 });
 
-$("#button-next").click('change', function() {
+$("#button-next").click(function() {
     const totalPages = getNumberOfPages();
     _CUR_PAGE_INDEX=mod(_CUR_PAGE_INDEX+1, totalPages);
     showImage();
+});
+
+$("#resend").click(function() {
+    _PDF_DOC.getData().then(d => {
+        console.log(d);
+        parse_pdf(d);
+    })
+})
+
+$("#pre-selects").change(function() {
+    var value = $("#pre-selects option:selected").val();
+    
+    if("lines" === value) {
+        $("#engine").val('v2')
+        $("#ymul").val('0')
+        $("#wmul").val('10')
+        $("#yspc").val('0')
+
+    } else if("paragraphs" === value) {
+        $("#engine").val('v2')
+        $("#ymul").val('1.75')
+        $("#wmul").val('7.25')
+        $("#yspc").val('1.10')
+
+    } else if("sections" === value) {
+        $("#engine").val('v2')
+        $("#ymul").val('3')
+        $("#wmul").val('10')
+        $("#yspc").val('3')
+
+    } else if("custom" === value) {
+        alert("custom")
+    } else {
+        alert("unknown")
+    }
+
 });
