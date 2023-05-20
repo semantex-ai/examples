@@ -54,18 +54,19 @@ The following functions are available.
 ```
 
 # Example Scenario
-In this example scenario, we will demonstrate some of the basic operations for a working with a content hub.
+In this example scenario, we will demonstrate some of the basic operations for working with the Semantex content hub.
 
+__List of actions:__
 1. Create an application.
 2. Index 3 PDF files.
 3. List the documents of the application.
 4. List of the content across all documents in the application.
 5. Perform simple text search
-6. Perform similarity search by
-a. using a content as a query using content id.
-b. using a text query.
-7. Get details of a specific content by its id
-9. Delete a document from the application
+6. Perform similarity search by using a:
+a. content as a query using content id.
+b. text query.
+7. Get details of a specific content by its content id.
+9. Delete a document from the application.
 10. Delete the application.
 
 ## Create An Application
