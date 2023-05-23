@@ -17,7 +17,7 @@ This will create a folder __*examples*__ in your current directory.
 
 Change into the following directory.
 ```sh
-$ cd examples/content_hub
+$ cd examples/content_hub_ex1/sample_app
 ```
 
 If you have a Semantex APIKEY, you should define it here[^1][^2].
