@@ -5,52 +5,59 @@
 ## Installation
 
 ### Requirements
-The following example requires *bash shell*, [cURL](https://curl.se/) and the [jq](https://stedolan.github.io/jq/download/) tool.  
+The following example requires *bash shell*, [cURL](https://curl.se/){:target="_blank"} and the [jq](https://stedolan.github.io/jq/download/){:target="_blank"} tool.  
 Please ensure that they are in your path.
+
+[jq](https://stedolan.github.io/jq/download/){:target="_blank"} 
 
 ### Setup
 Clone the git repository
 ```sh
-$ git clone https://github.com/semantex-ai/examples.git
+git clone https://github.com/semantex-ai/examples.git
 ```
 This will create a folder __*examples*__ in your current directory.
 
 Change into the following directory.
 ```sh
-$ cd examples/content_hub_ex1/sample_app
+cd examples/content_hub_ex1
 ```
 
 If you have a Semantex APIKEY, you should define it here[^1][^2].
 [^1]: In case, you don't have an APIKEY, you can skip this step, however, please note  that you will be working in a public sandboxed environment, where your application content will be publically viewable. 
 [^2]: You can register for a __free__ APIKEY at our [registration](https://semantex.ai/trial-sign-up/) page.
 ```sh
-$ export API_KEY="889543c8-8e1a0583-d895af11-183205330bf"
+export API_KEY="889543c8-8e1a0583-d895af11-183205330bf"
 ```
 
 Load the Semantex Content Hub Application cURL-based API wrapper functions.
 ```sh
-$ source playbook.sh
+source playbook.sh
 ```
 ```sh
-$ sem_help
+sem_help
 The following functions are available.
--) sem_display_config    -> Display the current configuration.
+-) sem_display_config -> Display the current configuration.
 
--) sem_create_app        -> Create a new application.
--) sem_delete_app        -> Delete an existing application.
--) sem_list_apps         -> Lists all applications.
+-) sem_create_app     -> Create a new application.
+-) sem_delete_app     -> Delete an existing application.
+-) sem_list_apps      -> Lists all applications.
 
--) sem_add_pdf            -> Add a single PDF file to an application via PDF ingestion API.
--) sem_list_app_docs      -> Lists all documents for a given application.
--) sem_list_app_countents -> Lists all content items for a given application.
--) sem_get_app_content    -> GET the content by content id for a given application.
+-) sem_add_pdf        -> Add a single PDF file to an application via PDF ingestion API.
+-) sem_list_docs      -> Lists all documents for a given application.
+-) sem_get_doc        -> GET a document by document id for a given application.
+-) sem_delete_doc     -> Delete a document for a given application.
 
--) sem_similarity_by_cid  -> Finds similar items given a content id across a given application.
--) sem_similarity_by_txt  -> Finds similar items given a text across a given application.
--) sem_text_search        -> Simple keyword based search.
+-) sem_list_contents  -> Lists all content items for a given application.
+-) sem_get_content    -> GET the content by content id for a given application.
+-) sem_delete_content -> Delete a content item for a given application.
 
--) sem_dep_check         -> Check for dependencies.
--) sem_cleanup           -> Cleanup the environment variables and functions.
+-) sem_sim_by_cid     -> Finds similar items given a content id across a given application.
+-) sem_sim_by_text    -> Finds similar items given a text across a given application.
+-) sem_text_search    -> Simple keyword based search.
+-) sem_search_text    -> Simple keyword based search.
+
+-) sem_dep_check      -> Check for dependencies.
+-) sem_cleanup        -> Cleanup the environment variables and functions.
 ```
 
 # Example Scenario
@@ -71,7 +78,7 @@ b. text query.
 
 ## Create An Application
 ```sh
-$ sem_create_app "My Test Semantex Application - 2023/05/19"
+sem_create_app "My Test Semantex Application - 2023/05/19"
 ```
 ```json
 {
@@ -88,7 +95,7 @@ Take a note of the applcation id returned.
 
 ## Index PDF Files
 ```sh
-$ sem_add_pdf samples/letter-01.pdf
+sem_add_pdf samples/letter-01.pdf
 ```
 ```json
 {
@@ -121,13 +128,13 @@ $ sem_add_pdf samples/letter-01.pdf
 ```
 Index the other two PDFs as well.
 ```sh
-$ sem_add_pdf samples/letter-02.pdf
-$ sem_add_pdf samples/letter-03.pdf
+sem_add_pdf samples/letter-02.pdf
+sem_add_pdf samples/letter-03.pdf
 ```
 
 ## List Application Documents
 ```sh
-$ sem_app_docs 
+sem_list_docs 
 ```
 ```json
 {
@@ -155,7 +162,7 @@ $ sem_app_docs
 ```
 ## List Application Contents
 ```sh
-$ sem_app_contents 
+sem_list_contents 
 ```
 ```json
 {
@@ -171,7 +178,7 @@ $ sem_app_contents
 
 ## Text (Keyword) Search
 ```sh
-$ sem_text_search "banking relationship"
+sem_search_text "banking relationship"
 ```
 ```json
 {
@@ -208,7 +215,7 @@ $ sem_text_search "banking relationship"
 
 ## Similarity Search By Content ID
 ```sh
-$ sem_similarity_by_cid ead207e4
+sem_sim_by_cid ead207e4
 ```
 ```json
 {
@@ -230,7 +237,7 @@ $ sem_similarity_by_cid ead207e4
 
 ## Similarity Search By Content Text
 ```sh
-$ sem_similarity_by_txt "bank letter"
+sem_sim_by_text "bank letter"
 ```
 ```json
 {
@@ -287,7 +294,7 @@ $ sem_similarity_by_txt "bank letter"
 
 ## Get Content Details by Content Id
 ```sh
-$ sem_app_content 00bb57bc 
+sem_get_content 00bb57bc 
 ```
 ```json
 {
@@ -345,7 +352,7 @@ $ sem_app_content 00bb57bc
 
 ## Delete a Document and all its Content from the Application
 ```sh
-$ sem_app_doc_del 315e5732
+sem_delete_doc 315e5732
 ```
 ```json
 {
@@ -361,7 +368,7 @@ $ sem_app_doc_del 315e5732
 
 ## Delete Application
 ```sh
-$ sem_delete_app "b6ee555d61df4c0ae30099d3ba4acf5c-403fa8f6"
+sem_delete_app "b6ee555d61df4c0ae30099d3ba4acf5c-403fa8f6"
 ```
 ```json
 {
