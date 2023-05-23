@@ -5,10 +5,10 @@
 ## Installation
 
 ### Requirements
-The following example requires *bash shell*, [cURL](https://curl.se/){:target="_blank"} and the [jq](https://stedolan.github.io/jq/download/){:target="_blank"} tool.  
-Please ensure that they are in your path.
+The following example requires *bash shell*, [cURL](https://curl.se/) and the [jq](https://stedolan.github.io/jq/download/) tool.  
+Please ensure that they are in your ```PATH```.
 
-[jq](https://stedolan.github.io/jq/download/){:target="_blank"} 
+[jq](https://stedolan.github.io/jq/download/)
 
 ### Setup
 Clone the git repository
