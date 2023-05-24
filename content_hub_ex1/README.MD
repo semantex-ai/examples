@@ -1,5 +1,3 @@
-[![N|Semantex](https://semantex.ai/wp-content/uploads/2022/06/cropped-Semantex-Logo-Final@1x.png)](https://semantex.ai)
-
 # Semantex - Content Hub Example
 
 ## Installation
@@ -35,6 +33,8 @@ source playbook.sh
 ```
 ```sh
 sem_help
+```
+```
 The following functions are available.
 -) sem_display_config -> Display the current configuration.
 
@@ -368,7 +368,7 @@ sem_delete_doc 315e5732
 
 ## Delete Application
 ```sh
-sem_delete_app "b6ee555d61df4c0ae30099d3ba4acf5c-403fa8f6"
+sem_delete_app $APP_ID
 ```
 ```json
 {
