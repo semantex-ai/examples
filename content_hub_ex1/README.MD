@@ -3,10 +3,22 @@
 ## Installation
 
 ### Requirements
-The following example requires *bash shell*, [cURL](https://curl.se/) and the [jq](https://stedolan.github.io/jq/download/) tool.  
+The following example requires *zsh shell*, [cURL](https://curl.se/) and the [jq](https://stedolan.github.io/jq/download/) tool.  
 Please ensure that they are in your ```PATH```.
 
 [jq](https://stedolan.github.io/jq/download/)
+
+### Verify if jq is your ```PATH```
+```
+which jq
+/usr/local/bin
+```
+
+### Enable zsh
+```sh
+zsh
+```
+
 
 ### Setup
 Clone the git repository
