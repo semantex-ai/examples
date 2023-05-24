@@ -9,8 +9,10 @@ Please ensure that they are in your ```PATH```.
 [jq](https://stedolan.github.io/jq/download/)
 
 ### Verify if jq is your ```PATH```
-```
+```sh
 which jq
+```
+```sh
 /usr/local/bin
 ```
 
@@ -92,6 +94,8 @@ b. text query.
 ```sh
 sem_create_app "My Test Semantex Application - 2023/05/19"
 ```
+
+response: Note the app-id.
 ```json
 {
   "status": {
@@ -109,6 +113,8 @@ Take a note of the applcation id returned.
 ```sh
 sem_add_pdf samples/letter-01.pdf
 ```
+
+response: Note the Document id (did), and content ids: (__cids__).
 ```json
 {
   "status": {
@@ -148,6 +154,9 @@ sem_add_pdf samples/letter-03.pdf
 ```sh
 sem_list_docs 
 ```
+
+response: The application contains 3 documents (315e5732, 315e5732, 957bc66d) containing
+60, 29 and 16 content pieces.
 ```json
 {
   "status": {
@@ -161,7 +170,7 @@ sem_list_docs
         "size": 69
       },
       {
-        "did": "4aae8d37",
+        "did": "315e5732",
         "size": 29
       },
       {
@@ -176,6 +185,8 @@ sem_list_docs
 ```sh
 sem_list_contents 
 ```
+
+response: List of all content ids in the application.
 ```json
 {
   "status": {
@@ -192,6 +203,8 @@ sem_list_contents
 ```sh
 sem_search_text "banking relationship"
 ```
+
+response: Three hits returned, with content ids: c4ce3e1b, 95a32298, 9d04b771
 ```json
 {
   "status": {
@@ -225,32 +238,12 @@ sem_search_text "banking relationship"
 }
 ```
 
-## Similarity Search By Content ID
-```sh
-sem_sim_by_cid ead207e4
-```
-```json
-{
-  "status": {
-    "success": true,
-    "code": 200
-  },
-  "result": {
-    "hits": [
-      {
-        "id": "00bb57bc",
-        "hash": "247d46caf00313971cb08e433d2db00e",
-        "score": 0.861
-      }
-    ]
-  }
-}
-```
-
 ## Similarity Search By Content Text
 ```sh
 sem_sim_by_text "bank letter"
 ```
+
+response: similar content returned, capturing content id (id), and a similarity score (score).
 ```json
 {
   "status": {
@@ -304,10 +297,36 @@ sem_sim_by_text "bank letter"
 }
 ```
 
+## Similarity Search By Content ID
+```sh
+sem_sim_by_cid ead207e4
+```
+
+response: 1 similar content found (00bb57bc), with similarity score of 0.861
+```json
+{
+  "status": {
+    "success": true,
+    "code": 200
+  },
+  "result": {
+    "hits": [
+      {
+        "id": "00bb57bc",
+        "hash": "247d46caf00313971cb08e433d2db00e",
+        "score": 0.861
+      }
+    ]
+  }
+}
+```
+
 ## Get Content Details by Content Id
 ```sh
 sem_get_content 00bb57bc 
 ```
+
+response:
 ```json
 {
   "status": {
@@ -366,6 +385,8 @@ sem_get_content 00bb57bc
 ```sh
 sem_delete_doc 315e5732
 ```
+
+response:
 ```json
 {
   "status": {
@@ -382,6 +403,8 @@ sem_delete_doc 315e5732
 ```sh
 sem_delete_app $APP_ID
 ```
+
+response:
 ```json
 {
   "status": {
