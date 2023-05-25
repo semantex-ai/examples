@@ -74,7 +74,7 @@ The following functions are available.
 -) sem_cleanup        -> Cleanup the environment variables and functions.
 ```
 
-# Example Scenario
+# Example Scenario 1
 In this example scenario, we will demonstrate some of the basic operations for working with the Semantex content hub.
 
 __List of actions:__
@@ -417,3 +417,16 @@ response:
   }
 }
 ```
+
+# Example Scenario 2 - Working with an Existing Application.
+Before you can work with an existing application, use either
+
+```sh
+sem_set_app {aid}
+```
+Or 
+```sh
+export APP_ID="AN_EXISTING_APPLICATION_ID"
+```
+
+Once, an application id is set, you can use the rest of the ```sem_*``` functions as usual.
