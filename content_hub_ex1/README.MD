@@ -73,6 +73,19 @@ The following functions are available.
 -) sem_dep_check      -> Check for dependencies.
 -) sem_cleanup        -> Cleanup the environment variables and functions.
 ```
+---
+**NOTE**
+
+The ```sem_*``` functions are simple wrappers for the corresponding ```cURL``` commands.
+For examples, the function ```sem_create_app``` is a wrapper for the following REST API call.
+
+```sh
+
+curl -s -XPOST "$BASE_URL/hub/apps" -H 'Content-Type: application/json' -H "x-api-key: $API_KEY" -d "$payload")
+```
+
+---
+
 
 # Example Scenario 1
 In this example scenario, we will demonstrate some of the basic operations for working with the Semantex content hub.
