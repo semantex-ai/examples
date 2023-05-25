@@ -78,19 +78,20 @@ The following functions are available.
 In this example scenario, we will demonstrate some of the basic operations for working with the Semantex content hub.
 
 __List of actions:__
-1. Create an application.
-2. Index 3 PDF files.
-3. List the documents of the application.
-4. List of the content across all documents in the application.
-5. Perform simple text search
+1. Create an application. ( ```sem_create_app``` )
+2. Index 3 PDF files. ( ```for f in samples/*.pdf; do sem_add_pdf $f; done``` )
+3. List the documents of the application. ( ```sem_list_docs``` )
+4. List of the content across all documents in the application. ( ```sem_list_contents``` )
+5. Perform simple text search. ( ```sem_search_text "bank"``` )
 6. Perform similarity search by using a:
-a. content as a query using content id.
-b. text query.
+  a. content as a query using content id.
+  b. text query.
 7. Get details of a specific content by its content id.
 9. Delete a document from the application.
-10. Delete the application.
+10. Delete the application. ( ```sem_delete_app $APP_ID ``` )
 
-## Create An Application
+## Step-By-Step
+### Create An Application
 ```sh
 sem_create_app "My Test Semantex Application - 2023/05/19"
 ```
@@ -109,7 +110,7 @@ response: Note the app-id.
 ```
 Take a note of the applcation id returned.
 
-## Index PDF Files
+### Index PDF Files
 ```sh
 sem_add_pdf samples/letter-01.pdf
 ```
@@ -150,7 +151,7 @@ sem_add_pdf samples/letter-02.pdf
 sem_add_pdf samples/letter-03.pdf
 ```
 
-## List Application Documents
+### List Application Documents
 ```sh
 sem_list_docs 
 ```
@@ -181,7 +182,7 @@ response: The application contains 3 documents (315e5732, 315e5732, 957bc66d) co
   }
 }
 ```
-## List Application Contents
+### List Application Contents
 ```sh
 sem_list_contents 
 ```
@@ -199,7 +200,7 @@ response: List of all content ids in the application.
 }
 ```
 
-## Text (Keyword) Search
+### Text (Keyword) Search
 ```sh
 sem_search_text "banking relationship"
 ```
@@ -238,7 +239,7 @@ response: Three hits returned, with content ids: c4ce3e1b, 95a32298, 9d04b771
 }
 ```
 
-## Similarity Search By Content Text
+### Similarity Search By Content Text
 ```sh
 sem_sim_by_text "bank letter"
 ```
@@ -297,7 +298,7 @@ response: similar content returned, capturing content id (id), and a similarity 
 }
 ```
 
-## Similarity Search By Content ID
+### Similarity Search By Content ID
 ```sh
 sem_sim_by_cid ead207e4
 ```
@@ -321,7 +322,7 @@ response: 1 similar content found (00bb57bc), with similarity score of 0.861
 }
 ```
 
-## Get Content Details by Content Id
+### Get Content Details by Content Id
 ```sh
 sem_get_content 00bb57bc 
 ```
@@ -381,7 +382,7 @@ response:
 }
 ```
 
-## Delete a Document and all its Content from the Application
+### Delete a Document and all its Content from the Application
 ```sh
 sem_delete_doc 315e5732
 ```
@@ -399,7 +400,7 @@ response:
 }
 ```
 
-## Delete Application
+### Delete Application
 ```sh
 sem_delete_app $APP_ID
 ```
