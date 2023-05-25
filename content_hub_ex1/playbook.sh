@@ -37,6 +37,16 @@ function sem_list_apps() {
     curl -s -XGET "$BASE_URL/hub/apps" -H 'Content-Type: application/json' -H "x-api-key: $API_KEY" | jq
 }
 
+function sem_set_app() {
+    if ! [[ -v 1 ]] ; then
+        echo "No application id specified to set."
+        echo "Usage: sem_set_app <app-id>"
+        return 1
+    fi
+    
+    export APP_ID "$1" 
+}
+
 function sem_add_pdf() {
 
     if !  validate_appid ; then 
@@ -45,8 +55,8 @@ function sem_add_pdf() {
 
     # Check to see if a file is provided
     if ! [[ -v 1 ]] ; then
-        echo "No application id specified to delete."
-        echo "Usage: sem_delete_app <app-id>"
+        echo "No application id specified."
+        echo "Usage: sem_add_pdf <app-id>"
         return 1
     fi
 
@@ -235,6 +245,7 @@ function sem_cleanup() {
   unset -f sem_create_app > /dev/null 2>&1
   unset -f sem_delete_app > /dev/null 2>&1
   unset -f sem_list_apps > /dev/null 2>&1
+  unset -f sem_set_app > /dev/null 2>&1
 
   unset -f sem_add_pdf > /dev/null 2>&1
   unset -f sem_list_docs > /dev/null 2>&1
@@ -277,6 +288,7 @@ function sem_help() {
   echo "-) sem_create_app     -> Create a new application."
   echo "-) sem_delete_app     -> Delete an existing application."
   echo "-) sem_list_apps      -> Lists all applications."
+  echo "-) sem_set_app        -> Sets the application identifier in \$APP_ID variable."
   echo
   echo "-) sem_add_pdf        -> Add a single PDF file to an application via PDF ingestion API."
   echo "-) sem_list_docs      -> Lists all documents for a given application."
