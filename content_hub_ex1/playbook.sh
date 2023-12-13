@@ -125,7 +125,7 @@ function sem_get_content() {
         return
     fi
 
-    # Check to see if a file is provided
+    # Check to see if a content id is provided
     if ! [[ -v 1 ]] ; then
         echo "No content id specified to retrieve."
         echo "Usage: sem_get_content <cid>"
@@ -140,14 +140,32 @@ function sem_delete_content() {
         return 10
     fi
 
-    # Check to see if a file is provided
+    # Check to see if a content id is provided
     if ! [[ -v 1 ]] ; then
         echo "No content id specified to delete."
-        echo "Usage: sem_delete_doc <cid>"
+        echo "Usage: sem_delete_content <cid>"
         return 1
     fi
 
     curl -s -X DELETE "$BASE_URL/hub/apps/$APP_ID/contents/$1" -H 'Content-Type: application/json' -H "x-api-key: $API_KEY" | jq
+}
+
+
+function sem_add_content() {
+    if !  validate_appid ; then 
+        return 10
+    fi
+
+    # Check to see if content text is provided
+    if ! [[ -v 1 ]] ; then
+        echo "No content specifiedto add."
+        echo "Usage: sem_add_content \"I would like to inform you.\""
+        return 1
+    fi
+
+    payload=$(jq -nr --arg text "$1" '{ "text": $text, "hash": $text }')
+    
+    curl -s -X POST "$BASE_URL/hub/apps/$APP_ID/contents" -H 'Content-Type: application/json' -H "x-api-key: $API_KEY" | jq
 }
 
 
@@ -255,6 +273,7 @@ function sem_cleanup() {
   unset -f sem_list_contents > /dev/null 2>&1
   unset -f sem_get_content > /dev/null 2>&1
   unset -f sem_delete_content > /dev/null 2>&1
+  unset -f sem_add_content > /dev/null 2>&1
 
   unset -f sem_sim_by_cid > /dev/null 2>&1
   unset -f sem_sim_by_text > /dev/null 2>&1
@@ -298,6 +317,7 @@ function sem_help() {
   echo "-) sem_list_contents  -> Lists all content items for a given application."
   echo "-) sem_get_content    -> GET the content by content id for a given application."
   echo "-) sem_delete_content -> Delete a content item for a given application."
+  echo "-) sem_add_content    -> Add a content item to a given application."
   echo
   echo "-) sem_sim_by_cid     -> Finds similar items given a content id across a given application."
   echo "-) sem_sim_by_text    -> Finds similar items given a text across a given application."
