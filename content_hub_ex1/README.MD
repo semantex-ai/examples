@@ -64,10 +64,10 @@ The following functions are available.
 -) sem_list_contents  -> Lists all content items for a given application.
 -) sem_get_content    -> GET the content by content id for a given application.
 -) sem_delete_content -> Delete a content item for a given application.
+-) sem_add_content    -> Add a content item to a given application.
 
 -) sem_sim_by_cid     -> Finds similar items given a content id across a given application.
 -) sem_sim_by_text    -> Finds similar items given a text across a given application.
--) sem_text_search    -> Simple keyword based search.
 -) sem_search_text    -> Simple keyword based search.
 
 -) sem_dep_check      -> Check for dependencies.
@@ -106,7 +106,7 @@ __List of actions:__
 ## Step-By-Step
 ### Create An Application
 ```sh
-sem_create_app "My Test Semantex Application - 2023/05/19"
+sem_create_app "My Test Semantex Application - $(date -I)"
 ```
 
 response: Note the app-id.
