@@ -26,7 +26,7 @@ function sem_lang_detect() {
     
     local payload=$(jq -nr --arg t "$text" '{"text":$t}')        
 
-    curl -s -X POST -H $H_API -H $H_CT_JSON "$BASE_URL/text/nlp/langdetect" -d "$payload" 
+    curl -s -X POST -H "$H_API" -H "$H_CT_JSON" "$BASE_URL/text/nlp/langdetect" -d "$payload" 
 }
 
 # Detects the sentiment for a given text input
@@ -38,7 +38,7 @@ function sem_sentiment() {
 
     local payload=$(jq -nr --arg t "$text" --arg l "$lang" '{"text":$t, "lang":$l}')        
 
-    curl -s -X POST -H $H_API -H $H_CT_JSON "$BASE_URL/text/enrichment/sentiment" -d "$payload" 
+    curl -s -X POST -H "$H_API" -H "$H_CT_JSON" "$BASE_URL/text/enrichment/sentiment" -d "$payload" 
 }
 
 
@@ -51,7 +51,7 @@ function sem_entities() {
 
     local payload=$(jq -nr --arg t "$text" --arg l "$lang" '{"text":$t, "lang":$l}')        
 
-    curl -s -X POST -H $H_API -H $H_CT_JSON "$BASE_URL/text/nlp/ner" -d "$payload" 
+    curl -s -X POST -H "$H_API" -H "$H_CT_JSON" "$BASE_URL/text/nlp/ner" -d "$payload" 
 }
 
 
@@ -64,7 +64,7 @@ function sem_spellcheck() {
 
     local payload=$(jq -nr --arg t "$text" --arg l "$lang" '{"text":$t, "lang":$l}')        
 
-    curl -s -X POST -H $H_API -H $H_CT_JSON "$BASE_URL/text/nlp/spellcheck" -d "$payload" 
+    curl -s -X POST -H "$H_API" -H "$H_CT_JSON" "$BASE_URL/text/nlp/spellcheck" -d "$payload" 
 }
 
 # Parses a PDF file.
@@ -75,7 +75,7 @@ function sem_parse_pdf() {
         echo "$file does not exist."
     fi
 
-    curl -s -X POST -H $H_API -H $H_CT_PDF "$BASE_URL/docs/parsers/pdf" --upload-file "$file" 
+    curl -s -X POST -H "$H_API" -H "$H_CT_PDF" "$BASE_URL/docs/parsers/pdf" --upload-file "$file" 
 }
 
 # Computes similarity of two text items.
@@ -101,7 +101,7 @@ function sem_similarity() {
 
     local payload=$(jq -nr --arg t1 "$text1" --arg l1 "$lang1" --arg t2 "$text2" --arg l2 "$lang2" --arg a "$algo" '{"text1":$t1, "text2":$t2, "lang1":$l1, "lang2":$l2, "algo":$a}')        
 
-    curl -s -X POST -H $H_API -H $H_CT_JSON "$BASE_URL/text/similarity" -d "$payload" 
+    curl -s -X POST -H "$H_API" -H "$H_CT_JSON" "$BASE_URL/text/similarity" -d "$payload" 
     
 }
 
