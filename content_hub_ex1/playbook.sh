@@ -163,7 +163,7 @@ function sem_add_content() {
         return 1
     fi
 
-    payload=$(jq -nr --arg text "$1" '{ "text": "$text", "hash": "123456789012345678901234567890_11" }')
+    payload=$(jq -nr --arg text "$1" '{ "text": $text, "hash": "123456789012345678901234567890_11" }')
     
     curl -s -X POST "$BASE_URL/hub/apps/$APP_ID/contents" -H 'Content-Type: application/json' -H "x-api-key: $API_KEY" -d "$payload" | jq
 }
