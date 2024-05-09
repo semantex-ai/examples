@@ -3,80 +3,92 @@ description: StyleBot that evaluates the writing styles based on given standards
 host: WORD
 api_set: {}
 script:
-  content: |
+  content: |+
     $("#stylebot").click(() => tryCatch(style));
     $("#stylebot_all").click(() => tryCatch(style_all));
 
     async function style_all() {
       await Word.run(async (context) => {
         const loader = document.getElementById("loader");
-        await handleExistingComments(context);
-        const model = await getModel();
 
-        var paragraphs = context.document.body.paragraphs;
-        paragraphs.load("text, range");
-        await context.sync();
+        try {
+          await handleExistingComments(context);
+          const model = await getModel();
 
-        // Filter paragraphs and prepare promises for each paragraph processing
-        const processingPromises = paragraphs.items
-          .filter((p) => p.text.trim().length > 0)
-          .map(async (paragraph) => {
-            const text = paragraph.text;
-            const response = await check_style(text, model);
-            const range = paragraph.getRange();
-            range.load("text");
-            return processResponse(context, range, response);
-          });
+          var paragraphs = context.document.body.paragraphs;
+          paragraphs.load("text, range");
+          await context.sync();
 
-        // Wait for all promises to resolve
-        loader.classList.remove("hidden"); // Show the loader
-        await Promise.all(processingPromises);
-        loader.classList.add("hidden");
-        await context.sync();
+          // Filter paragraphs and prepare promises for each paragraph processing
+          const processingPromises = paragraphs.items
+            .filter((p) => p.text.trim().length > 0)
+            .map(async (paragraph) => {
+              const text = paragraph.text;
+              const response = await check_style(text, model);
+              const range = paragraph.getRange();
+              range.load("text");
+              return processResponse(context, range, response);
+            });
+
+          // Wait for all promises to resolve
+          loader.classList.remove("hidden"); // Show the loader
+          loader.style.animation = 'animation: l16 3s infinite';
+          await Promise.all(processingPromises);
+
+          await context.sync();
+        } finally {
+          loader.classList.add("hidden");
+          loader.style.animation = 'none'
+        }
       });
     }
 
     async function style() {
       await Word.run(async (context) => {
         const loader = document.getElementById("loader");
-        const range = await getSelectedRange(context);
-        const text = await getTextFromRange(context, range);
+        try {
+          const range = await getSelectedRange(context);
+          const text = await getTextFromRange(context, range);
 
-        // Make sure we have selected text
-        if (!text.trim()) {
-          console.log("No text selected. Please select some text to check for style violations.");
-          return;
+          // Make sure we have selected text
+          if (!text.trim()) {
+            console.log("No text selected. Please select some text to check for style violations.");
+            return;
+          }
+
+          // Clear the existing comments if checked.
+          await handleExistingComments(context);
+
+          const model = await getModel();
+
+          loader.classList.remove("hidden"); // Show the loader
+          loader.style.animation = 'animation: l16 3s infinite';
+
+          // Validate the selected text using Semantex API
+          const response = await check_style(range.text, model);
+
+          // Create the comments
+          await processResponse(context, range, response);
+
+          await context.sync();
+        } finally {
+          loader.classList.add("hidden");
+          loader.style.animation = 'none'
         }
-
-        // Clear the existing comments if checked.
-        await handleExistingComments(context);
-
-        const model = await getModel();
-
-        loader.classList.remove("hidden"); // Show the loader
-
-        // Validate the selected text using Semantex API
-        const response = await check_style(range.text, model);
-
-        // Create the comments
-        await processResponse(context, range, response);
-
-        loader.classList.add("hidden");
-
-        await context.sync();
       });
     }
 
     async function check_style(text, model) {
       console.log("Processing:\n" + text + "\nModel: " + model);
 
-      const apikey = $("#apikey").text();
+      const apikey = $("#apikey").val();
 
+      console.log("APIKEY: " + apikey);
       const response = await fetch(`https://tjpriw2omfpe2ufrm3qlovmtoa0cpxic.lambda-url.us-east-1.on.aws/`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "x-api-key": apikey
+          "x-api-key": "" + apikey
         },
         body: JSON.stringify({ text: text.trim(), model: model })
       });
@@ -101,6 +113,12 @@ script:
     }
 
     async function processResponse(context, paragraph, response) {
+      if (!response.status.success) {
+        console.log("Server responded with an error: " + response.error.message);
+        console.log(response);
+        return;
+      }
+
       let hasViolations = false;
       for (let violation of response.result.violations) {
         if (violation.applies) {
@@ -109,6 +127,7 @@ script:
           paragraph.insertComment(formattedViolation);
         }
       }
+      
       if (!hasViolations) {
         console.log("Clean Text: No violations found.");
       }
@@ -135,6 +154,7 @@ script:
       console.log(range.text);
       return range.text;
     }
+
   language: typescript
 template:
   content: "<div class=\"form-container\">\n\t<!-- Buttons on the top -->\n\t<div class=\"form-item\">\n\t\t<button id=\"stylebot\" class=\"ms-Button\">\n      <span class=\"ms-Button-label\">Check Writing Style</span>\n    </button>\n\t\t<button id=\"stylebot_all\" class=\"ms-Button\">\n\t\t  <span class=\"ms-Button-label\">Check All</span>\n\t\t</button>\n\t</div>\n\n\t<!-- Configuration div for model selection and checkbox -->\n\t<div class=\"bordered-div\" id=\"configDiv\">\n\t\t<span class=\"title\">Configuration parameters:</span>\n\t\t<br />\n\t\t<div class=\"form-item\">\n\t\t\t<label for=\"models\">Model:</label>\n\t\t\t<select id=\"models\">\n\t\t\t\t<option value=\"chatgpt\">Chat GPT</option>\n\t\t\t\t<option value=\"gpt4-t\">GPT4 Turbo</option>\n\t\t\t\t<option value=\"gpt4\">GPT4</option>\n\t\t\t</select>\n\t\t</div>\n\n\t\t<div class=\"form-item\">\n\t\t\t<input id=\"replace\" type=\"checkbox\" checked>\n\t\t\t<label for=\"replace\">Clear Comments</label>\n\t\t</div>\n\n\t\t<div>\n\t\t\tAPIKEY: <input type=\"text\" id=\"apikey\" placeholder=\"Enter your API Key here\" required></input>\n\t\t</div>\n\n\t</div>\n\n\n\n</div>\n\n<div id=\"loader\" class=\"loader hidden\"></div>"
@@ -145,7 +165,7 @@ style:
       background-color: #4CAF50; /* Green background for the button */
       color: white; /* White text color */
       border: none;
-      padding: 10px 20px;
+      /*padding: 20px 20px;*/
       border-radius: 4px;
       cursor: pointer;
     }
@@ -174,17 +194,17 @@ style:
     }
 
     .loader {
-        border: 16px solid #f3f3f3; /* Light grey */
-        border-top: 16px solid #3498db; /* Blue */
-        border-radius: 50%;
-        width: 120px;
-        height: 120px;
-        animation: spin 2s linear infinite;
+      height: 4px;
+      width: 130px;
+      --c:no-repeat linear-gradient(#6100ee 0 0);
+      background: var(--c),var(--c),#d7b8fc;
+      background-size: 60% 100%;
+      animation: l16 3s infinite;
     }
-
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
+    @keyframes l16 {
+      0%   {background-position:-150% 0,-150% 0}
+      66%  {background-position: 250% 0,-150% 0}
+      100% {background-position: 250% 0, 250% 0}
     }
 
     /* Hide loader by default */
