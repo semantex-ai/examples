@@ -1,0 +1,206 @@
+name: StyleBot
+description: StyleBot that evaluates the writing styles based on given standards.
+host: WORD
+api_set: {}
+script:
+  content: |
+    $("#stylebot").click(() => tryCatch(style));
+    $("#stylebot_all").click(() => tryCatch(style_all));
+
+    async function style_all() {
+      await Word.run(async (context) => {
+        const loader = document.getElementById("loader");
+        await handleExistingComments(context);
+        const model = await getModel();
+
+        var paragraphs = context.document.body.paragraphs;
+        paragraphs.load("text, range");
+        await context.sync();
+
+        // Filter paragraphs and prepare promises for each paragraph processing
+        const processingPromises = paragraphs.items
+          .filter((p) => p.text.trim().length > 0)
+          .map(async (paragraph) => {
+            const text = paragraph.text;
+            const response = await check_style(text, model);
+            const range = paragraph.getRange();
+            range.load("text");
+            return processResponse(context, range, response);
+          });
+
+        // Wait for all promises to resolve
+        loader.classList.remove("hidden"); // Show the loader
+        await Promise.all(processingPromises);
+        loader.classList.add("hidden");
+        await context.sync();
+      });
+    }
+
+    async function style() {
+      await Word.run(async (context) => {
+        const loader = document.getElementById("loader");
+        const range = await getSelectedRange(context);
+        const text = await getTextFromRange(context, range);
+
+        // Make sure we have selected text
+        if (!text.trim()) {
+          console.log("No text selected. Please select some text to check for style violations.");
+          return;
+        }
+
+        // Clear the existing comments if checked.
+        await handleExistingComments(context);
+
+        const model = await getModel();
+
+        loader.classList.remove("hidden"); // Show the loader
+
+        // Validate the selected text using Semantex API
+        const response = await check_style(range.text, model);
+
+        // Create the comments
+        await processResponse(context, range, response);
+
+        loader.classList.add("hidden");
+
+        await context.sync();
+      });
+    }
+
+    async function check_style(text, model) {
+      console.log("Processing:\n" + text + "\nModel: " + model);
+
+      const apikey = $("#apikey").text();
+
+      const response = await fetch(`https://tjpriw2omfpe2ufrm3qlovmtoa0cpxic.lambda-url.us-east-1.on.aws/`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": apikey
+        },
+        body: JSON.stringify({ text: text.trim(), model: model })
+      });
+      return response.json();
+    }
+
+    async function handleExistingComments(context) {
+      const clearExisting = $("#replace").is(":checked");
+      if (clearExisting) {
+        const comments = context.document.body.getComments();
+        comments.load("items");
+        await context.sync();
+
+        comments.items.forEach((comment) => comment.delete());
+        await context.sync();
+      }
+    }
+
+    async function getModel() {
+      const model = $("#models").val();
+      return model;
+    }
+
+    async function processResponse(context, paragraph, response) {
+      let hasViolations = false;
+      for (let violation of response.result.violations) {
+        if (violation.applies) {
+          hasViolations = true;
+          let formattedViolation = `${violation.category} - ${violation.rule}\n\nViolation: ${violation.violation}\n\nCorrection: ${violation.correction}\n\nContext: ${violation.context}`;
+          paragraph.insertComment(formattedViolation);
+        }
+      }
+      if (!hasViolations) {
+        console.log("Clean Text: No violations found.");
+      }
+      await context.sync();
+    }
+
+    async function tryCatch(callback) {
+      try {
+        await callback();
+      } catch (error) {
+        console.error("Error caught:", error);
+      }
+    }
+
+    function getSelectedRange(context) {
+      const range = context.document.getSelection();
+      return range;
+    }
+
+    async function getTextFromRange(context, range) {
+      range.load("text");
+      await context.sync();
+
+      console.log(range.text);
+      return range.text;
+    }
+  language: typescript
+template:
+  content: "<div class=\"form-container\">\n\t<!-- Buttons on the top -->\n\t<div class=\"form-item\">\n\t\t<button id=\"stylebot\" class=\"ms-Button\">\n      <span class=\"ms-Button-label\">Check Writing Style</span>\n    </button>\n\t\t<button id=\"stylebot_all\" class=\"ms-Button\">\n\t\t  <span class=\"ms-Button-label\">Check All</span>\n\t\t</button>\n\t</div>\n\n\t<!-- Configuration div for model selection and checkbox -->\n\t<div class=\"bordered-div\" id=\"configDiv\">\n\t\t<span class=\"title\">Configuration parameters:</span>\n\t\t<br />\n\t\t<div class=\"form-item\">\n\t\t\t<label for=\"models\">Model:</label>\n\t\t\t<select id=\"models\">\n\t\t\t\t<option value=\"chatgpt\">Chat GPT</option>\n\t\t\t\t<option value=\"gpt4-t\">GPT4 Turbo</option>\n\t\t\t\t<option value=\"gpt4\">GPT4</option>\n\t\t\t</select>\n\t\t</div>\n\n\t\t<div class=\"form-item\">\n\t\t\t<input id=\"replace\" type=\"checkbox\" checked>\n\t\t\t<label for=\"replace\">Clear Comments</label>\n\t\t</div>\n\n\t\t<div>\n\t\t\tAPIKEY: <input type=\"text\" id=\"apikey\" placeholder=\"Enter your API Key here\" required></input>\n\t\t</div>\n\n\t</div>\n\n\n\n</div>\n\n<div id=\"loader\" class=\"loader hidden\"></div>"
+  language: html
+style:
+  content: |
+    .ms-Button {
+      background-color: #4CAF50; /* Green background for the button */
+      color: white; /* White text color */
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .ms-Button:hover {
+      background-color: #388E3C; /* Darker green on hover */
+    }
+
+    .form-item {
+      margin-bottom: 10px;
+      margin-top: 10px;
+    }
+
+    .bordered-div {
+      border-style: solid; /* Style of the border */
+      border-width: 2px; /* Thickness of the border */
+      border-color: #8C8C8C; /* Gray border for the div */
+      padding: 20px; /* Space inside the div */
+      margin: 10px; /* Space outside the div */
+      display: inline-block;
+    }
+
+    .title {
+      color: blue;        /* Sets the text color to blue */
+      font-weight: bold;  /* Makes the text bold */  
+      margin-bottom: 10px;
+    }
+
+    .loader {
+        border: 16px solid #f3f3f3; /* Light grey */
+        border-top: 16px solid #3498db; /* Blue */
+        border-radius: 50%;
+        width: 120px;
+        height: 120px;
+        animation: spin 2s linear infinite;
+    }
+
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+
+    /* Hide loader by default */
+    .hidden {
+        display: none;
+    }
+  language: css
+libraries: |
+  https://appsforoffice.microsoft.com/lib/1/hosted/office.js
+  @types/office-js
+
+  office-ui-fabric-js@1.4.0/dist/css/fabric.min.css
+  office-ui-fabric-js@1.4.0/dist/css/fabric.components.min.css
+
+  core-js@2.4.1/client/core.min.js
+  @types/core-js
+
+  jquery@3.1.1
+  @types/jquery@3.3.1
