@@ -81,11 +81,15 @@ script:
     }
 
     async function check_style(text, model) {
-      console.log("Processing:\n" + text + "\nModel: " + model);
+      console.log("Processing:" + "\tModel: " + model + "\n" + text );
 
       const apikey = $("#apikey").val();
 
-      console.log("APIKEY: " + apikey);
+      if(!apikey) {
+        console.log("Missing APIKEY. Visit https://semantex.ai/apis/.");
+        throw new Error('Missing APIKEY.');    
+      }
+
       const response = await fetch(`https://tjpriw2omfpe2ufrm3qlovmtoa0cpxic.lambda-url.us-east-1.on.aws/`, {
         method: "POST",
         headers: {
@@ -94,7 +98,12 @@ script:
         },
         body: JSON.stringify({ text: text.trim(), model: model })
       });
-      return response.json();
+      
+      const respose_json = {
+        "text": text,
+        "response": await response.json()
+      }
+      return respose_json;
     }
 
     async function handleExistingComments(context) {
@@ -114,24 +123,29 @@ script:
       return model;
     }
 
-    async function processResponse(context, paragraph, response) {
-      if (!response.status.success) {
-        console.log("Server responded with an error: " + response.error.message);
-        console.log(response);
+    async function processResponse(context, paragraph, result) {
+
+      if (!result.response.status.success) {
+        console.log("Server responded with an error: " + result.response.error.message);
+        console.log(result.response);
         return;
       }
 
+      let counter = 0;
       let hasViolations = false;
-      for (let violation of response.result.violations) {
+      for (let violation of result.response.result.violations) {
         if (violation.applies) {
           hasViolations = true;
           let formattedViolation = `${violation.category} - ${violation.rule}\n\nViolation: ${violation.violation}\n\nCorrection: ${violation.correction}\n\nContext: ${violation.context}`;
           paragraph.insertComment(formattedViolation);
+          counter++;
         }
       }
 
       if (!hasViolations) {
-        console.log("Clean Text: No violations found.");
+        console.log("Clean Text: No violations found.\n" + result.text);
+      } else {
+        console.log("Number of violations found: " + counter + "\n" + result.text);
       }
       await context.sync();
     }
@@ -152,8 +166,7 @@ script:
     async function getTextFromRange(context, range) {
       range.load("text");
       await context.sync();
-
-      console.log(range.text);
+      //console.log(range.text);
       return range.text;
     }
   language: typescript
