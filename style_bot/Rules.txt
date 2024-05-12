@@ -30,3 +30,4 @@ CATEGORY 4 (Abbreviations, acronyms & initialisms):
 CATEGORY 5 (Addresses):
 21. For numbered addresses, always use figures. Abbreviate Ave., Blvd., and St. and directional cues when used with a numbered address. Always spell out other words such as alley, drive and road. If the street name or directional cue is used without a numbered address, it should be capitalized and spelled out. If a street name is a number, spell out First through Ninth and use figures for 10th and higher (don't use superscripts for "th," "nd" or "st").
 For example:  101 N. Grant St., Northwestern Avenue, South Ninth Street, 102 S. 10th St., 605 Woodside
+22. In mailing addresses U.S. states and territories should be abbreviating to use two-letter postal codes.
