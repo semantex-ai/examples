@@ -191,7 +191,7 @@ script:
     }
   language: typescript
 template:
-  content: "<div class=\"form-container\">\n\t<!-- Buttons on the top -->\n\t<div class=\"form-item\">\n\t\t<button id=\"stylebot\" class=\"ms-Button\">\n      <span class=\"ms-Button-label\">Check Writing Style</span>\n    </button>\n\t\t<button id=\"stylebot_all\" class=\"ms-Button\">\n\t\t  <span class=\"ms-Button-label\">Check All</span>\n\t\t</button>\n\t\t<br />\n\t\t<button id=\"clear_comments\" class=\"ms-Button\">\n\t\t      <span class=\"ms-Button-label\">Clear All Comments</span>\n\t\t    </button>\n\t</div>\n\n\t<div class=\"form-item\">\n\t\t<h3>Rule Categories:</h3>\n\t\t<select id=\"categories\" multiple size=\"5\">\n\t\t\t<option value=\"1\">(1) Crawford specific</option>\n\t\t\t<option value=\"2\">(2) Phone Numbers</option>\n\t\t\t<option value=\"3\">(3) Showing possession</option>\n\t\t\t<option value=\"4\">(4) Abbreviations, acronyms & initialisms</option>\n\t\t\t<option value=\"5\">(5) Addresses</option>\n\t\t\t</select>\n\t</div>\n\n\t<!-- Configuration div for model selection and checkbox -->\n\t<div class=\"bordered-div\" id=\"configDiv\">\n\t\t<span class=\"title\">Configuration parameters:</span>\n\t\t<br />\n\t\t<div class=\"form-item\">\n\t\t\t<label for=\"models\">Model:</label>\n\t\t\t<select id=\"models\">\n\t\t\t\t<option value=\"gpt4\">GPT4</option>\n\t\t\t\t<option value=\"gpt4-t\">GPT4 Turbo</option>\t\t\t\t\n\t\t\t</select>\n\t\t</div>\n\n\t\t<div class=\"form-item\">\n\t\t\t<input id=\"replace\" type=\"checkbox\" checked>\n\t\t\t<label for=\"replace\">Reset comments on validation</label>\n\t\t</div>\n\n\t\t<div class=\"form-item\">\n\t\t\tAPIKEY: <input type=\"text\" id=\"apikey\" placeholder=\"Enter your API Key here\" required></input>\n\t\t</div>\n\n\t</div>\n\n\n\n</div>\n\n<div id=\"loader\" class=\"loader form-item hidden\"></div>"
+  content: "<img src=\"https://semantex.ai/wp-content/uploads/2022/06/cropped-Semantex-Logo-Final@1x.png\" alt=\"Semantex logo\"</img>\n\n\n<div class=\"container\">\n\t<p class=\"title\">Validation Actions:</p>\n\n\t<!-- Buttons on the top -->\n\t<div class=\"form-item\">\n\t\t<button id=\"stylebot\" class=\"ms-Button\">\n\t\t\t\t<span class=\"ms-Button-label\">Check Selection</span>\n\t\t\t</button>\n\t\t<button id=\"stylebot_all\" class=\"ms-Button\">\n\t\t\t\t<span class=\"ms-Button-label\">Check All</span>\n\t\t\t</button>\n\t\t<br />\n\t\t<button id=\"clear_comments\" class=\"ms-Button\">\n\t\t\t\t\t\t<span class=\"ms-Button-label\">Clear Comments</span>\n\t\t\t\t\t</button>\n\t</div>\n</div>\n<hr />\n<div class=\"container\">\n\t<p class=\"title\">Rule Categories:</p>\n\t<div class=\"form-item\">\n\t\t<p>Select one or more rule categories:\n\t\t\t<br />\n\t\t\t<select id=\"categories\" multiple size=\"5\">\n\t\t\t<option value=\"1\">(1) Crawford specific</option>\n\t\t\t<option value=\"2\">(2) Phone Numbers</option>\n\t\t\t<option value=\"3\">(3) Showing possession</option>\n\t\t\t<option value=\"4\">(4) Abbreviations, acronyms & initialisms</option>\n\t\t\t<option value=\"5\">(5) Addresses</option>\n\t\t\t</select>\n\t\t</p>\n\t\t<p><i>Note: select all or none will enforce rules from all categories.</i></p>\n\t</div>\n</div>\n<hr />\n<div class=\"container\">\n\t<p class=\"title\">Configuration:</p>\n\t<div class=\"form-item\">\n\t\t<label for=\"models\">Model:</label>\n\t\t<select id=\"models\">\n\t\t\t\t<option value=\"gpt4\">GPT4</option>\n\t\t\t\t<option value=\"gpt4-t\">GPT4 Turbo</option>\t\t\t\t\n\t\t\t</select>\n\t</div>\n\n\t<div class=\"form-item\">\n\t\t<input id=\"replace\" type=\"checkbox\" checked>\n\t\t<label for=\"replace\">Reset comments on validation</label>\n\t</div>\n\n\t<div class=\"form-item\">\n\t\tAPIKEY<sup>*</sup>: <input type=\"text\" id=\"apikey\" placeholder=\"Enter your API Key here\" required></input>\n\t\t<p>* required.\n\t\t\t<br/>public key:  https://semantex.ai/apis/\n\t\t\t</p>\n\t</div>\n</div>\n\n<div id=\"loader\" class=\"loader form-item hidden\"></div>"
   language: html
 style:
   content: |
@@ -203,30 +203,28 @@ style:
       border-radius: 4px;
       cursor: pointer;
       margin-bottom: 10px;
-      margin-top: 10px;  
     }
     .ms-Button:hover {
       background-color: #388E3C; /* Darker green on hover */
     }
 
-    .form-item {
-      margin-bottom: 10px;
-      margin-top: 10px;
+    .container {
+      width: 300px;
+      padding: 0rem 0.5rem;  /* Adds some padding inside the container */
+      border: 1px solid #ddd;  /* Adds a thin border */
+      border-radius: 5px;  /* Adds rounded corners for a nicer look */
     }
 
-    .bordered-div {
-      border-style: solid; /* Style of the border */
-      border-width: 2px; /* Thickness of the border */
-      border-color: #8C8C8C; /* Gray border for the div */
-      padding: 20px; /* Space inside the div */
-      /* margin: 10px; /* Space outside the div */
-      display: inline-block;
+    .form-item {
+      margin-bottom: 10px;
+    /*   margin-top: 10px; */
     }
 
     .title {
-      color: blue;        /* Sets the text color to blue */
-      font-weight: bold;  /* Makes the text bold */  
-      margin-bottom: 10px;
+      background-color: gray;
+      color: white;
+      font-weight: bold;
+      font-size: 1.5em; 
     }
 
     .loader {
