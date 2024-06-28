@@ -1,4 +1,4 @@
-name: Semantex-Translation
+name: Semantex-Translation (1)
 description: ''
 host: EXCEL
 api_set: {}
@@ -67,8 +67,8 @@ script:
           const response = await translate_accuracy(text1, text2, "en", "es");
           console.log(`response: ${response.result.label}`);
 
-          const labelRange  = sheet.getRange(`C${i + 2}`);
-          const explRange   = sheet.getRange(`D${i + 2}`);
+          const labelRange = sheet.getRange(`C${i + 2}`);
+          const explRange = sheet.getRange(`D${i + 2}`);
           labelRange.values = [[response.result.label]];
           explRange.values = [[response.result.explanation]];
 
@@ -107,7 +107,8 @@ script:
             text2: text2.trim(),
             lang1: lang1.trim(),
             lang2: lang2.trim(),
-            model: "gpt4"
+            cache : false,
+            model: "gpt4-o"
           })
         }
       );
