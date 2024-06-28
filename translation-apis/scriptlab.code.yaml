@@ -1,0 +1,104 @@
+name: Semantex-Translation
+description: ''
+host: EXCEL
+api_set: {}
+script:
+  content: |
+    $("#run").on("click", () => tryCatch(run));
+
+    const APIKEY = "889543c8-8e1a0583-d895af11-183205330bf";
+
+    async function run() {
+      await Excel.run(async (context) => {
+
+        const direction = Excel.KeyboardDirection.down;
+
+        const sheet = context.workbook.worksheets.getActiveWorksheet();
+        const range = sheet.getRange("A2").getExtendedRange(direction);
+        range.load("values");
+
+        await context.sync();
+
+        const values = range.values;
+        const translations = [];
+
+        for (let i = 0; i < values.length; i++) {
+          const text = values[i][0];
+          if (text.trim() === "") continue;
+
+          const response_es = await translate(text, "es");
+          const response_tl = await translate(text, "tl");
+
+          console.log(`Original: ${text}`);
+          console.log(`Spanish: ${response_es.result.translation}`);
+          console.log(`Tagalog: ${response_tl.result.translation}`);
+
+          const spanishRange = sheet.getRange(`B${i + 2}`);
+          const tagalogRange = sheet.getRange(`C${i + 2}`);
+          spanishRange.values = [[response_es.result.translation]];
+          tagalogRange.values = [[response_tl.result.translation]];
+
+          await context.sync();
+        }
+
+        await context.sync();
+      });
+    }
+
+    async function translate(text, lang) {
+      const response = await fetch(`https://w1waoh1clk.execute-api.us-east-1.amazonaws.com/semantex-qa/text/translate`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "x-api-key": APIKEY
+        },
+        body: JSON.stringify({ text: text.trim(), target: lang, engine: "genai", ctxgenai: {model: "gpt4"}})
+        });
+
+      const respose_json = await response.json()
+      return respose_json;
+    }
+
+
+
+    /** Default helper for invoking an action and handling errors. */
+    async function tryCatch(callback) {
+      try {
+        await callback();
+      } catch (error) {
+        // Note: In a production add-in, you'd want to notify the user through your add-in's UI.
+        console.error(error);
+      }
+    }
+  language: typescript
+template:
+  content: |
+    <button id="run" class="ms-Button">
+        <span class="ms-Button-label">Run</span>
+    </button>
+  language: html
+style:
+  content: |-
+    section.samples {
+        margin-top: 20px;
+    }
+
+    section.samples .ms-Button, section.setup .ms-Button {
+        display: block;
+        margin-bottom: 5px;
+        margin-left: 20px;
+        min-width: 80px;
+    }
+  language: css
+libraries: |
+  https://appsforoffice.microsoft.com/lib/1/hosted/office.js
+  @types/office-js
+
+  office-ui-fabric-js@1.4.0/dist/css/fabric.min.css
+  office-ui-fabric-js@1.4.0/dist/css/fabric.components.min.css
+
+  core-js@2.4.1/client/core.min.js
+  @types/core-js
+
+  jquery@3.1.1
+  @types/jquery@3.3.1

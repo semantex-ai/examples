@@ -1,0 +1,64 @@
+# ================================================================================
+# Example function that wrap example API endpoints in bash callable functions
+# See https://semantex.ai/apis/ for a details on all the APIs and their interface.
+#
+# REQUIRES: 
+#   - curl (https://curl.se/) 
+#   - jq (https://stedolan.github.io/jq/)
+#   - bash/zsh shell 
+#
+# AUTHOR: Atif Khan
+# DATE:   Jun, 2024
+#
+# USAGE: source sem_functions
+#   - e.g. $ sem_lang_detect "This text is written in English."
+# ================================================================================
+
+API_KEY=${API_KEY:=889543c8-8e1a0583-d895af11-183205330bf}
+BASE_URL=${BASE_URL:=https://w1waoh1clk.execute-api.us-east-1.amazonaws.com/semantex-qa}
+H_API="X-API-KEY: $API_KEY"
+H_CT_JSON="Content-Type: application/json"
+H_CT_PDF="Content-Type: application/pdf"
+
+
+# Parses a PDF file.
+function sem_parse_pdf() {
+    local file=$1
+
+    if ! [[ -f "$file" ]]; then
+        echo "$file does not exist."
+    fi
+
+    curl -s -X POST -H "$H_API" -H "$H_CT_PDF" "$BASE_URL/docs/parsers/pdf" --upload-file "$file" 
+}
+
+# Translates a text to a target language.
+# input:
+#   $1: source text
+#   $2: target language to translate to
+function sem_translate() {
+
+    local text=$1
+    local lang=$2
+
+    local payload=$(jq -nr --arg t "$text" --arg l "$lang" '{"text":$t, "target":$l, "engine":"genai"}')        
+
+    curl -s -X POST -H "$H_API" -H "$H_CT_JSON" "$BASE_URL/text/translate" -d "$payload" 
+    
+}
+
+# Measures the accuracy of a translation.
+# input:
+#   $1: source text
+#   $2: translated text
+function sem_translation_accuracy() {
+
+    local text1=$1
+    local text2=$2
+
+    local payload=$(jq -nr --arg t1 "$text1" --arg t2 "$text2" '{"text1":$t1, "text2":$t2, "explain":true}')        
+
+    curl -s -X POST -H "$H_API" -H "$H_CT_JSON" "$BASE_URL/text/translate/accuracy" -d "$payload" 
+
+
+}
